@@ -46,6 +46,8 @@ class Course(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
+        if not self.slug:
+            return reverse('courses:course_list')
         return reverse('courses:course_detail', kwargs={'slug': self.slug})
 
     def __str__(self) -> str:
