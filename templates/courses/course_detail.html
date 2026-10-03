@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ course.title }} — SkillPulse{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1>{{ course.title }}</h1>
+        <p class="badge bg-secondary">{{ course.category.title }}</p>
+        <p class="lead mt-3">{{ course.description }}</p>
+
+        <h3 class="mt-5 mb-3">Программа курса</h3>
+        <div class="list-group mb-4">
+            {% for lesson in lessons %}
+                {% if is_enrolled or user == course.instructor or user.is_superuser %}
+                    <a href="{% url 'courses:lesson_detail' lesson.pk %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <span><strong>Урок {{ lesson.order }}:</strong> {{ lesson.title }}</span>
+                        <span class="badge bg-success rounded-pill">Доступен</span>
+                    </a>
+                {% else %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center text-muted">
+                        <span><strong>Урок {{ lesson.order }}:</strong> {{ lesson.title }}</span>
+                        <span class="badge bg-secondary rounded-pill">Заблокирован</span>
+                    </div>
+                {% endif %}
+            {% empty %}
+                <p class="text-muted">Уроки пока не добавлены.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h3 class="card-title text-primary mb-3">{{ course.price }} ₸</h3>
+                
+                {% if user.is_authenticated %}
+                    {% if is_enrolled %}
+                        <div class="alert alert-success">Вы записаны на этот курс!</div>
+                    {% elif user == course.instructor %}
+                        <a href="{% url 'courses:course_update' course.slug %}" class="btn btn-warning w-100 mb-2">Редактировать курс</a>
+                    {% else %}
+                        <form action="{% url 'courses:course_enroll' course.slug %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-lg w-100">Записаться на курс</button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'users:login' %}" class="btn btn-outline-primary w-100">Войдите, чтобы записаться</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
