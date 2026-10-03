@@ -3,53 +3,87 @@
 {% block title %}{{ course.title }} — SkillPulse{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-8">
-        <h1>{{ course.title }}</h1>
-        <p class="badge bg-secondary">{{ course.category.title }}</p>
-        <p class="lead mt-3">{{ course.description }}</p>
+<div class="course-layout">
+    <div>
+        <header class="course-head">
+            <a class="tag" href="{% url 'courses:course_list' %}?category={{ course.category.slug }}">{{ course.category.title }}</a>
+            <h1>{{ course.title }}</h1>
+            <p class="byline">Преподаватель: <a href="{% url 'users:profile_detail' course.instructor.username %}">{{ course.instructor.display_name }}</a></p>
+        </header>
 
-        <h3 class="mt-5 mb-3">Программа курса</h3>
-        <div class="list-group mb-4">
-            {% for lesson in lessons %}
-                {% if is_enrolled or user == course.instructor or user.is_superuser %}
-                    <a href="{% url 'courses:lesson_detail' lesson.pk %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                        <span><strong>Урок {{ lesson.order }}:</strong> {{ lesson.title }}</span>
-                        <span class="badge bg-success rounded-pill">Доступен</span>
-                    </a>
-                {% else %}
-                    <div class="list-group-item d-flex justify-content-between align-items-center text-muted">
-                        <span><strong>Урок {{ lesson.order }}:</strong> {{ lesson.title }}</span>
-                        <span class="badge bg-secondary rounded-pill">Заблокирован</span>
-                    </div>
-                {% endif %}
-            {% empty %}
-                <p class="text-muted">Уроки пока не добавлены.</p>
-            {% endfor %}
-        </div>
-    </div>
+        <div class="prose-read">{{ course.description|linebreaks }}</div>
 
-    <div class="col-md-4">
-        <div class="card shadow-sm">
-            <div class="card-body text-center">
-                <h3 class="card-title text-primary mb-3">{{ course.price }} ₸</h3>
-                
-                {% if user.is_authenticated %}
-                    {% if is_enrolled %}
-                        <div class="alert alert-success">Вы записаны на этот курс!</div>
-                    {% elif user == course.instructor %}
-                        <a href="{% url 'courses:course_update' course.slug %}" class="btn btn-warning w-100 mb-2">Редактировать курс</a>
-                    {% else %}
-                        <form action="{% url 'courses:course_enroll' course.slug %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success btn-lg w-100">Записаться на курс</button>
-                        </form>
-                    {% endif %}
-                {% else %}
-                    <a href="{% url 'users:login' %}" class="btn btn-outline-primary w-100">Войдите, чтобы записаться</a>
+        <section class="syllabus" aria-labelledby="syllabus-title">
+            <div class="section-head">
+                <h2 id="syllabus-title">Программа курса</h2>
+                {% if can_manage %}
+                    <a class="small" href="{% url 'courses:lesson_create' course.slug %}">Добавить урок</a>
                 {% endif %}
             </div>
-        </div>
+
+            {% if lessons %}
+                <ol class="lesson-list">
+                    {% for lesson in lessons %}
+                        <li>
+                            <div class="lesson-item{% if not can_read %} locked{% endif %}">
+                                <span class="num">{{ lesson.order }}</span>
+                                {% if can_read %}
+                                    <a class="lesson-link" href="{% url 'courses:lesson_detail' lesson.pk %}">{{ lesson.title }}</a>
+                                {% else %}
+                                    <span>{{ lesson.title }}</span>
+                                {% endif %}
+                                <span class="state">
+                                    {% if can_manage %}
+                                        <a href="{% url 'courses:lesson_update' lesson.pk %}">Изменить</a>
+                                    {% elif not can_read %}
+                                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>
+                                        После записи
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ol>
+            {% else %}
+                <div class="empty">
+                    {% if can_manage %}
+                        <strong>В курсе пока нет уроков</strong>
+                        <a href="{% url 'courses:lesson_create' course.slug %}">Добавить первый урок</a>
+                    {% else %}
+                        <strong>Уроки ещё не добавлены</strong>
+                        Преподаватель скоро опубликует материалы.
+                    {% endif %}
+                </div>
+            {% endif %}
+        </section>
     </div>
+
+    <aside class="buy-box" aria-label="Запись на курс">
+        <div class="price">{{ course.price|floatformat:"-2" }} ₸</div>
+        <ul class="facts">
+            <li>Уроков: {{ lessons|length }}</li>
+            <li>Студентов: {{ course.enrollments.count }}</li>
+        </ul>
+
+        {% if user.is_authenticated %}
+            {% if can_manage %}
+                <a href="{% url 'courses:lesson_create' course.slug %}" class="btn btn-primary btn-block">Добавить урок</a>
+                <a href="{% url 'courses:course_update' course.slug %}" class="btn btn-outline btn-block">Редактировать курс</a>
+                <a href="{% url 'courses:course_delete' course.slug %}" class="btn btn-danger-outline btn-block">Удалить курс</a>
+            {% elif is_enrolled %}
+                <div class="status-ok">Вы записаны на этот курс</div>
+                {% if lessons %}
+                    <a href="{% url 'courses:lesson_detail' lessons.0.pk %}" class="btn btn-primary btn-block" style="margin-top:0.5rem">Начать с первого урока</a>
+                {% endif %}
+            {% else %}
+                <form action="{% url 'courses:course_enroll' course.slug %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Записаться на курс</button>
+                </form>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'users:login' %}?next={{ request.path|urlencode }}" class="btn btn-primary btn-lg btn-block">Войти и записаться</a>
+        {% endif %}
+    </aside>
 </div>
 {% endblock %}

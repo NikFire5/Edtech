@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ lesson.title }} — {{ lesson.course.title }}{% endblock %}
+
+{% block content %}
+<div class="reader">
+    <nav class="outline" aria-label="Содержание курса">
+        <a class="course-link" href="{{ lesson.course.get_absolute_url }}">{{ lesson.course.title }}</a>
+        <ol>
+            {% for item in lesson.course.lessons.all %}
+                <li>
+                    <a href="{% url 'courses:lesson_detail' item.pk %}"{% if item.pk == lesson.pk %} aria-current="page"{% endif %}>
+                        <span class="n">{{ item.order }}</span>
+                        <span>{{ item.title }}</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ol>
+    </nav>
+
+    <article class="lesson-article">
+        <div class="crumb">
+            Урок {{ lesson.order }}
+            {% if can_manage %}
+                <a class="crumb-action" href="{% url 'courses:lesson_update' lesson.pk %}">Изменить урок</a>
+            {% endif %}
+        </div>
+        <h1>{{ lesson.title }}</h1>
+
+        <div class="lesson-body">{{ lesson.content|linebreaks }}</div>
+
+        <nav class="lesson-pager" aria-label="Переход между уроками">
+            {% if prev_lesson %}
+                <a class="prev" href="{% url 'courses:lesson_detail' prev_lesson.pk %}">
+                    <span class="pager-label">Предыдущий урок</span>
+                    <span class="pager-title">{{ prev_lesson.title }}</span>
+                </a>
+            {% endif %}
+            {% if next_lesson %}
+                <a class="next" href="{% url 'courses:lesson_detail' next_lesson.pk %}">
+                    <span class="pager-label">Следующий урок</span>
+                    <span class="pager-title">{{ next_lesson.title }}</span>
+                </a>
+            {% else %}
+                <a class="next" href="{{ lesson.course.get_absolute_url }}">
+                    <span class="pager-label">Это последний урок</span>
+                    <span class="pager-title">Вернуться к курсу</span>
+                </a>
+            {% endif %}
+        </nav>
+    </article>
+</div>
+{% endblock %}

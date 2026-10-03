@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Страница не найдена — SkillPulse{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <div class="code">404</div>
+    <h1>Страница не найдена</h1>
+    <p>Возможно, ссылка устарела или курс был удалён.</p>
+    <div class="actions">
+        <a class="btn btn-primary" href="{% url 'courses:course_list' %}">К каталогу курсов</a>
+    </div>
+</div>
+{% endblock %}

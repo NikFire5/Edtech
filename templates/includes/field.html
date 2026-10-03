@@ -1,0 +1,11 @@
+{# Одно поле формы: {% include 'includes/field.html' with field=form.title %} #}
+<div class="field{% if field.errors %} has-error{% endif %}">
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    {{ field }}
+    {% if field.help_text %}<div class="help">{{ field.help_text|safe }}</div>{% endif %}
+    {% if field.errors %}
+        <ul class="errors">
+            {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+    {% endif %}
+</div>

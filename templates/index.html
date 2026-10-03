@@ -1,32 +1,48 @@
 {% extends 'base.html' %}
 
-{% block title %}Главная — SkillPulse{% endblock %}
+{% block title %}SkillPulse — онлайн-курсы по программированию и инженерии{% endblock %}
 
 {% block content %}
-<div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
-    <div class="container-fluid py-3">
-        <h1 class="display-5 fw-bold">Обучайтесь профессионально</h1>
-        <p class="col-md-8 fs-4">Получите актуальные навыки в программировании и инженерии от экспертов индустрии.</p>
-        <a class="btn btn-primary btn-lg" href="{% url 'courses:course_list' %}" role="button">Перейти к курсам</a>
+<section class="hero">
+    <h1>Учитесь программированию и инженерии в своём темпе</h1>
+    <p>Курсы от практикующих специалистов. Запишитесь на нужный и читайте уроки, когда удобно.</p>
+    <div class="actions">
+        <a class="btn btn-primary btn-lg" href="{% url 'courses:course_list' %}">Выбрать курс</a>
+        {% if not user.is_authenticated %}
+            <a class="btn btn-outline btn-lg" href="{% url 'users:signup' %}">Создать аккаунт</a>
+        {% endif %}
     </div>
-</div>
 
-<h2 class="mb-4">Популярные курсы</h2>
-<div class="row row-cols-1 row-cols-md-3 g-4">
-    {% for course in popular_courses %}
-    <div class="col">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <span class="badge bg-secondary mb-2">{{ course.category.title }}</span>
-                <h5 class="card-title">{{ course.title }}</h5>
-                <p class="card-text text-muted">{{ course.description|truncatewords:15 }}</p>
-            </div>
-            <div class="card-footer bg-white d-flex justify-content-between align-items-center">
-                <span class="fw-bold">{{ course.price }} ₸</span>
-                <a href="{{ course.get_absolute_url }}" class="btn btn-sm btn-outline-primary">Подробнее</a>
-            </div>
-        </div>
+    <svg class="pulse-line" viewBox="0 0 1000 56" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 36 H330 L360 36 L385 8 L420 50 L448 22 L470 36 H1000"/>
+    </svg>
+</section>
+
+<section class="section">
+    <div class="section-head">
+        <h2>Популярные курсы</h2>
+        <a class="small" href="{% url 'courses:course_list' %}">Весь каталог</a>
     </div>
-    {% endfor %}
-</div>
+
+    {% if popular_courses %}
+        <ul class="course-list">
+            {% for course in popular_courses %}
+                <li class="course-row">
+                    <h3><a href="{{ course.get_absolute_url }}">{{ course.title }}</a></h3>
+                    <span class="price">{{ course.price|floatformat:"-2" }} ₸</span>
+                    <p class="desc">{{ course.description|truncatewords:22 }}</p>
+                    <div class="meta">
+                        <span class="tag">{{ course.category.title }}</span>
+                        <span>{{ course.instructor.username }}</span>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="empty">
+            <strong>Курсов пока нет</strong>
+            Загляните позже — преподаватели скоро добавят первые.
+        </div>
+    {% endif %}
+</section>
 {% endblock %}

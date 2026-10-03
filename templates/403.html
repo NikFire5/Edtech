@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Нет доступа — SkillPulse{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <div class="code">403</div>
+    <h1>Нет доступа</h1>
+    <p>Эта страница доступна только записанным студентам и преподавателю курса.</p>
+    <div class="actions">
+        <a class="btn btn-primary" href="{% url 'courses:course_list' %}">К каталогу курсов</a>
+    </div>
+</div>
+{% endblock %}

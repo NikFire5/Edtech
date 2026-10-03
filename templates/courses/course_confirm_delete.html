@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Удаление курса — SkillPulse{% endblock %}
+
+{% block content %}
+<div class="confirm-box">
+    <h1>Удалить курс?</h1>
+    <p>Курс <span class="course-name">«{{ object.title }}»</span> будет удалён вместе со всеми уроками и записями студентов. Это действие нельзя отменить.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Удалить курс</button>
+            <a class="btn btn-ghost" href="{{ object.get_absolute_url }}">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

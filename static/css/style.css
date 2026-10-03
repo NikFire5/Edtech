@@ -1,0 +1,533 @@
+/* SkillPulse — минималистичный дизайн
+   Шрифты: Onest (интерфейс), Literata (чтение уроков и описаний) */
+
+:root {
+    --bg: #fafbfc;
+    --surface: #ffffff;
+    --ink: #1c2230;
+    --muted: #667085;
+    --line: #e4e7ec;
+    --line-strong: #cfd4dc;
+    --accent: #0a7f71;
+    --accent-hover: #086b5f;
+    --accent-soft: #e6f5f2;
+    --danger: #b42318;
+    --danger-soft: #fdecea;
+    --ok: #1a7f4b;
+    --ok-soft: #e7f6ee;
+
+    --font-ui: "Onest", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-read: "Literata", Georgia, "Times New Roman", serif;
+
+    --radius: 6px;
+    --page: 68rem;
+    --read: 40rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-ui);
+    font-size: 1rem;
+    line-height: 1.55;
+}
+
+img, svg { max-width: 100%; }
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--accent-hover); }
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 3px;
+}
+
+h1, h2, h3 {
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); }
+h2 { font-size: 1.375rem; }
+h3 { font-size: 1.0625rem; letter-spacing: -0.01em; }
+
+p { margin: 0; }
+
+.container {
+    width: 100%;
+    max-width: var(--page);
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+}
+
+.muted { color: var(--muted); }
+.small { font-size: 0.875rem; }
+
+/* ---------- Шапка ---------- */
+
+.site-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+}
+.site-header .container {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    min-height: 3.75rem;
+    flex-wrap: wrap;
+    padding-block: 0.5rem;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 1.125rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+}
+.brand:hover { color: var(--ink); }
+.brand svg { width: 1.75rem; height: 1.25rem; flex: none; }
+
+.nav { display: flex; align-items: center; gap: 1.25rem; }
+.nav a { color: var(--muted); text-decoration: none; font-size: 0.9375rem; }
+.nav a:hover, .nav a[aria-current="page"] { color: var(--ink); }
+
+.header-end {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+.header-end form { margin: 0; }
+.user-name { font-size: 0.9375rem; color: var(--muted); text-decoration: none; }
+.user-name:hover { color: var(--ink); }
+
+/* ---------- Кнопки ---------- */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.3;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-hover); color: #fff; }
+
+.btn-outline { background: var(--surface); border-color: var(--line-strong); color: var(--ink); }
+.btn-outline:hover { border-color: var(--ink); color: var(--ink); }
+
+.btn-ghost { background: transparent; color: var(--muted); padding-inline: 0.5rem; }
+.btn-ghost:hover { color: var(--ink); }
+
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { background: #912018; color: #fff; }
+
+.btn-danger-outline { background: var(--surface); border-color: var(--line-strong); color: var(--danger); }
+.btn-danger-outline:hover { border-color: var(--danger); color: var(--danger); }
+
+.btn-lg { padding: 0.75rem 1.4rem; font-size: 1rem; }
+.btn-block { width: 100%; }
+
+/* ---------- Основной блок ---------- */
+
+.site-main { flex: 1; padding-block: 2.5rem 4rem; }
+
+.site-footer {
+    border-top: 1px solid var(--line);
+    padding-block: 1.25rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+}
+
+/* ---------- Сообщения ---------- */
+
+.messages { list-style: none; margin: 0 0 1.5rem; padding: 0; display: grid; gap: 0.5rem; }
+.message {
+    padding: 0.7rem 1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    font-size: 0.9375rem;
+}
+.message.success { background: var(--ok-soft); border-color: #bfe5cf; color: #14633b; }
+.message.error { background: var(--danger-soft); border-color: #f4c4be; color: var(--danger); }
+.message.info, .message.warning { background: var(--accent-soft); border-color: #bfe3dd; color: #075e53; }
+
+/* ---------- Главная ---------- */
+
+.hero { padding-block: 1.5rem 0.5rem; }
+.hero h1 { max-width: 24ch; }
+.hero p { margin-top: 1rem; max-width: 34rem; color: var(--muted); font-size: 1.125rem; }
+.hero .actions { margin-top: 1.75rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+.pulse-line {
+    display: block;
+    width: 100%;
+    height: 3.5rem;
+    margin-top: 2.5rem;
+    overflow: hidden;
+    animation: pulse-reveal 1.6s cubic-bezier(0.3, 0.6, 0.3, 1) 0.2s both;
+}
+.pulse-line path {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+@keyframes pulse-reveal {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+}
+
+.section { margin-top: 3.5rem; }
+.section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+/* ---------- Список курсов ---------- */
+
+.course-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+
+.course-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.25rem 2rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--line);
+}
+.course-row h3 a { color: var(--ink); text-decoration: none; }
+.course-row h3 a:hover { color: var(--accent); }
+.course-row .desc { grid-column: 1; color: var(--muted); font-size: 0.9375rem; max-width: 46rem; }
+.course-row .meta {
+    grid-column: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+}
+.course-row .price {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.tag { color: var(--accent); font-weight: 500; }
+
+.empty { padding: 3rem 0; color: var(--muted); border-top: 1px solid var(--line); }
+.empty strong { display: block; color: var(--ink); font-weight: 600; margin-bottom: 0.25rem; }
+
+/* ---------- Каталог: фильтры ---------- */
+
+.page-head { margin-bottom: 2rem; }
+.page-head p { margin-top: 0.5rem; color: var(--muted); }
+
+.filters {
+    display: grid;
+    grid-template-columns: 1fr 14rem;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ---------- Формы ---------- */
+
+.field { margin-bottom: 1.25rem; }
+.field label { display: block; margin-bottom: 0.375rem; font-size: 0.9375rem; font-weight: 500; }
+
+.field input[type="text"],
+.field input[type="email"],
+.field input[type="password"],
+.field input[type="number"],
+.field input[type="url"],
+.field select,
+.field textarea,
+.filters input,
+.filters select {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    font: inherit;
+    font-size: 1rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field input[type="number"] { max-width: 10rem; }
+.field textarea { min-height: 7rem; resize: vertical; line-height: 1.5; }
+
+.field input:hover, .field select:hover, .field textarea:hover,
+.filters input:hover, .filters select:hover { border-color: var(--muted); }
+
+.field input:focus, .field select:focus, .field textarea:focus,
+.filters input:focus, .filters select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.field.has-error input, .field.has-error select, .field.has-error textarea { border-color: var(--danger); }
+
+.help { margin-top: 0.375rem; font-size: 0.8125rem; color: var(--muted); }
+.help ul { margin: 0.25rem 0 0; padding-left: 1.1rem; }
+.errors { list-style: none; margin: 0.375rem 0 0; padding: 0; font-size: 0.875rem; color: var(--danger); }
+
+.form-alert {
+    margin-bottom: 1.25rem;
+    padding: 0.7rem 1rem;
+    border-radius: var(--radius);
+    background: var(--danger-soft);
+    border: 1px solid #f4c4be;
+    color: var(--danger);
+    font-size: 0.9375rem;
+}
+
+.form-actions { display: flex; align-items: center; gap: 0.75rem; margin-top: 1.75rem; flex-wrap: wrap; }
+
+/* Узкая колонка для вход/регистрация/форм */
+.narrow { max-width: 26rem; }
+.narrow-wide { max-width: 38rem; }
+.narrow h1, .narrow-wide h1 { margin-bottom: 0.5rem; }
+.narrow .lead, .narrow-wide .lead { color: var(--muted); margin-bottom: 2rem; }
+.form-foot { margin-top: 1.5rem; font-size: 0.9375rem; color: var(--muted); }
+
+/* ---------- Страница курса ---------- */
+
+.course-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 17rem;
+    gap: 4rem;
+    align-items: start;
+}
+
+.course-head .tag { font-size: 0.9375rem; }
+.course-head h1 { margin-top: 0.5rem; }
+.course-head .byline { margin-top: 0.75rem; color: var(--muted); font-size: 0.9375rem; }
+
+.prose-read {
+    margin-top: 1.75rem;
+    max-width: var(--read);
+    font-family: var(--font-read);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+}
+.prose-read p + p { margin-top: 1em; }
+
+.syllabus { margin-top: 3rem; }
+.syllabus h2 { margin-bottom: 0.75rem; }
+
+.lesson-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.lesson-list li { border-bottom: 1px solid var(--line); }
+.lesson-item {
+    display: grid;
+    grid-template-columns: 2rem 1fr auto;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.85rem 0;
+}
+.lesson-item .num { color: var(--muted); font-variant-numeric: tabular-nums; }
+.lesson-item .lesson-link { color: var(--ink); text-decoration: none; }
+.lesson-item .lesson-link:hover { color: var(--accent); }
+.lesson-item .state { font-size: 0.8125rem; color: var(--muted); display: inline-flex; align-items: center; gap: 0.35rem; }
+.lesson-item .state a { color: var(--muted); }
+.lesson-item .state a:hover { color: var(--accent); }
+.lesson-item.locked { color: var(--muted); }
+.lesson-item .state svg { width: 0.9rem; height: 0.9rem; }
+
+.buy-box {
+    position: sticky;
+    top: 1.5rem;
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--line);
+}
+.buy-box .price { font-size: 1.75rem; font-weight: 600; letter-spacing: -0.02em; }
+.buy-box .facts { margin: 1rem 0 1.5rem; padding: 0; list-style: none; font-size: 0.9375rem; color: var(--muted); display: grid; gap: 0.25rem; }
+.buy-box .btn + .btn, .buy-box form + .btn, .buy-box .btn + form { margin-top: 0.5rem; }
+.buy-box form { margin: 0; }
+.status-ok {
+    padding: 0.6rem 0.8rem;
+    background: var(--ok-soft);
+    color: #14633b;
+    border-radius: var(--radius);
+    font-size: 0.9375rem;
+}
+
+/* ---------- Читалка урока ---------- */
+
+.reader {
+    display: grid;
+    grid-template-columns: 16rem minmax(0, 1fr);
+    gap: 4rem;
+    align-items: start;
+}
+
+.outline { position: sticky; top: 1.5rem; font-size: 0.9375rem; }
+.outline .course-link { display: block; font-weight: 600; color: var(--ink); text-decoration: none; margin-bottom: 1rem; line-height: 1.3; }
+.outline .course-link:hover { color: var(--accent); }
+.outline ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--line); }
+.outline li a {
+    display: grid;
+    grid-template-columns: 1.5rem 1fr;
+    padding: 0.4rem 0 0.4rem 0.9rem;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    color: var(--muted);
+    text-decoration: none;
+    line-height: 1.35;
+}
+.outline li a:hover { color: var(--ink); }
+.outline li a .n { font-variant-numeric: tabular-nums; }
+.outline li a[aria-current="page"] { border-left-color: var(--accent); color: var(--ink); font-weight: 500; }
+
+.lesson-article { max-width: var(--read); }
+.lesson-article .crumb { font-size: 0.9375rem; color: var(--muted); }
+.lesson-article h1 { margin-top: 0.5rem; font-size: clamp(1.75rem, 3.4vw, 2.25rem); }
+
+.lesson-body {
+    margin-top: 2rem;
+    font-family: var(--font-read);
+    font-size: 1.125rem;
+    line-height: 1.75;
+}
+.lesson-body p + p { margin-top: 1.1em; }
+.lesson-body pre, .lesson-body code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.9em; }
+.lesson-body pre { padding: 1rem; background: #f1f3f6; border-radius: var(--radius); overflow-x: auto; line-height: 1.5; }
+
+.lesson-pager {
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+.lesson-pager a { display: block; text-decoration: none; color: var(--ink); }
+.lesson-pager a:hover .pager-title { color: var(--accent); }
+.lesson-pager .pager-label { display: block; font-size: 0.8125rem; color: var(--muted); }
+.lesson-pager .pager-title { font-weight: 500; }
+.lesson-pager .next { text-align: right; grid-column: 2; }
+.lesson-pager .prev { grid-column: 1; }
+
+/* ---------- Подтверждение удаления ---------- */
+
+.confirm-box { max-width: 30rem; }
+.confirm-box h1 { font-size: 1.75rem; margin-bottom: 0.75rem; }
+.confirm-box .course-name { font-weight: 500; }
+
+/* ---------- Ссылка назад, действия в заголовках ---------- */
+
+.back-link { display: inline-block; margin-bottom: 1rem; font-size: 0.9375rem; color: var(--muted); text-decoration: none; }
+.back-link::before { content: "\2190\00a0"; }
+.back-link:hover { color: var(--ink); }
+
+.crumb-action { margin-left: 1rem; font-size: 0.875rem; }
+
+/* ---------- Поле + кнопка рядом, поля в два столбца ---------- */
+
+.field-inline { display: flex; gap: 0.5rem; align-items: stretch; }
+.field-inline select { flex: 1; min-width: 0; }
+.field-inline .btn { flex: none; white-space: nowrap; }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem; }
+
+/* ---------- Диалог ---------- */
+
+.dialog {
+    width: min(26rem, calc(100vw - 2rem));
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 12px 32px rgba(28, 34, 48, 0.18);
+}
+.dialog::backdrop { background: rgba(28, 34, 48, 0.4); }
+.dialog h2 { margin-bottom: 1.25rem; }
+.dialog .field { margin-bottom: 0; }
+.dialog .form-actions { margin-top: 1.25rem; }
+
+/* ---------- Профиль ---------- */
+
+.profile-head { display: flex; align-items: center; gap: 1.25rem; }
+.profile-head h1 { font-size: clamp(1.6rem, 3.4vw, 2.1rem); }
+.profile-meta { margin-top: 0.35rem; display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; font-size: 0.9375rem; }
+
+.avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.profile-bio { margin-top: 1.5rem; }
+.profile-actions { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+
+/* ---------- Ошибки 403 / 404 ---------- */
+
+.error-page { padding-block: 3rem; max-width: 30rem; }
+.error-page .code { font-size: 4rem; font-weight: 600; letter-spacing: -0.04em; color: var(--accent); line-height: 1; }
+.error-page h1 { margin-top: 1rem; font-size: 1.75rem; }
+.error-page p { margin-top: 0.5rem; color: var(--muted); }
+.error-page .actions { margin-top: 1.5rem; }
+
+/* ---------- Адаптивность ---------- */
+
+@media (max-width: 860px) {
+    .course-layout, .reader { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
+    .buy-box { position: static; padding-left: 0; border-left: 0; padding-top: 1.5rem; border-top: 1px solid var(--line); order: -1; }
+    .outline { position: static; order: 1; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+}
+
+@media (max-width: 600px) {
+    .site-main { padding-block: 1.75rem 3rem; }
+    .filters { grid-template-columns: 1fr; }
+    .field-row { grid-template-columns: 1fr; }
+    .field-inline { flex-direction: column; }
+    .course-row { grid-template-columns: 1fr; }
+    .course-row .price { grid-column: 1; grid-row: auto; margin-top: 0.25rem; }
+    .site-header .container { gap: 0.75rem 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+}

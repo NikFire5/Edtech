@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Редактирование курса{% else %}Новый курс{% endif %} — SkillPulse{% endblock %}
+
+{% block content %}
+<div class="narrow-wide">
+    <h1>{% if object %}Редактирование курса{% else %}Новый курс{% endif %}</h1>
+    <p class="lead">
+        {% if object %}
+            Изменения сразу появятся на странице курса.
+        {% else %}
+            Заполните основную информацию. Уроки можно добавить после создания курса.
+        {% endif %}
+    </p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="form-alert" role="alert">
+                {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+            </div>
+        {% endif %}
+
+        {% include 'includes/field.html' with field=form.title %}
+
+        <div class="field{% if form.category.errors %} has-error{% endif %}">
+            <label for="{{ form.category.id_for_label }}">{{ form.category.label }}</label>
+            <div class="field-inline">
+                {{ form.category }}
+                <a class="btn btn-outline" id="category-add" href="{% url 'courses:category_create' %}?next={{ request.path|urlencode }}">Новая категория</a>
+            </div>
+            {% if form.category.errors %}
+                <ul class="errors">
+                    {% for error in form.category.errors %}<li>{{ error }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        {% include 'includes/field.html' with field=form.price %}
+        {% include 'includes/field.html' with field=form.description %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg">{% if object %}Сохранить изменения{% else %}Создать курс{% endif %}</button>
+            <a class="btn btn-ghost" href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'courses:course_list' %}{% endif %}">Отмена</a>
+        </div>
+    </form>
+</div>
+
+{# Диалог создания категории. Находится вне основной формы: вложенные <form> недопустимы. #}
+<dialog id="category-dialog" class="dialog" aria-labelledby="category-dialog-title">
+    <form id="category-form" method="post" action="{% url 'courses:category_create' %}" novalidate>
+        {% csrf_token %}
+        <h2 id="category-dialog-title">Новая категория</h2>
+        <div class="field">
+            <label for="category-title">Название</label>
+            <input type="text" id="category-title" name="title" maxlength="150" required placeholder="Например, Data Science" autocomplete="off">
+            <ul class="errors" id="category-errors" hidden></ul>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Создать категорию</button>
+            <button type="button" class="btn btn-ghost" id="category-cancel">Отмена</button>
+        </div>
+    </form>
+</dialog>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const openLink = document.getElementById('category-add');
+    const dialog = document.getElementById('category-dialog');
+    const form = document.getElementById('category-form');
+    const titleInput = document.getElementById('category-title');
+    const errorList = document.getElementById('category-errors');
+    const cancelButton = document.getElementById('category-cancel');
+    const select = document.getElementById('{{ form.category.id_for_label }}');
+
+    // Без поддержки <dialog> остаётся обычная ссылка на отдельную страницу.
+    if (typeof dialog.showModal !== 'function') return;
+
+    const showErrors = (messages) => {
+        errorList.innerHTML = '';
+        messages.forEach((text) => {
+            const li = document.createElement('li');
+            li.textContent = text;
+            errorList.appendChild(li);
+        });
+        errorList.hidden = messages.length === 0;
+    };
+
+    openLink.addEventListener('click', (event) => {
+        event.preventDefault();
+        form.reset();
+        showErrors([]);
+        dialog.showModal();
+        titleInput.focus();
+    });
+
+    cancelButton.addEventListener('click', () => dialog.close());
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        showErrors([]);
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                select.add(new Option(data.title, data.id, true, true));
+                dialog.close();
+                select.focus();
+            } else {
+                const messages = Object.values(data.errors || {}).flat();
+                showErrors(messages.length ? messages : ['Не удалось создать категорию.']);
+            }
+        } catch (error) {
+            showErrors(['Нет связи с сервером. Попробуйте ещё раз.']);
+        }
+    });
+});
+</script>
+{% endblock %}

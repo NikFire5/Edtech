@@ -1,19 +1,16 @@
 {% for course in courses %}
-<div class="col">
-    <div class="card h-100 shadow-sm">
-        <div class="card-body">
-            <span class="badge bg-info text-dark mb-2">{{ course.category.title }}</span>
-            <h5 class="card-title">{{ course.title }}</h5>
-            <p class="card-text text-muted">Автор: {{ course.instructor.username }}</p>
-        </div>
-        <div class="card-footer bg-white d-flex justify-content-between align-items-center">
-            <span class="fw-bold">{{ course.price }} ₸</span>
-            <a href="{{ course.get_absolute_url }}" class="btn btn-sm btn-outline-primary">Подробнее</a>
-        </div>
+<li class="course-row">
+    <h3><a href="{{ course.get_absolute_url }}">{{ course.title }}</a></h3>
+    <span class="price">{{ course.price|floatformat:"-2" }} ₸</span>
+    <p class="desc">{{ course.description|truncatewords:22 }}</p>
+    <div class="meta">
+        <span class="tag">{{ course.category.title }}</span>
+        <span>{{ course.instructor.username }}</span>
     </div>
-</div>
+</li>
 {% empty %}
-<div class="col-12">
-    <p class="text-muted">Курсы не найдены.</p>
-</div>
+<li class="empty">
+    <strong>Ничего не найдено</strong>
+    Измените запрос или выберите другую категорию.
+</li>
 {% endfor %}

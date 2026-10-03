@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile_user.display_name }} — SkillPulse{% endblock %}
+
+{% block content %}
+<header class="profile-head">
+    <div class="avatar" aria-hidden="true">{{ profile_user.username|slice:":1"|upper }}</div>
+    <div>
+        <h1>{{ profile_user.display_name }}</h1>
+        <p class="profile-meta">
+            <span class="muted">@{{ profile_user.username }}</span>
+            <span class="tag">{{ profile_user.get_role_display }}</span>
+        </p>
+    </div>
+</header>
+
+{% if profile_user.bio %}
+    <div class="prose-read profile-bio">{{ profile_user.bio|linebreaks }}</div>
+{% endif %}
+
+{% if is_own %}
+    <div class="profile-actions">
+        <a class="btn btn-outline" href="{% url 'users:profile_edit' %}">Редактировать профиль</a>
+        <a class="btn btn-ghost" href="{% url 'users:password_change' %}">Сменить пароль</a>
+    </div>
+{% endif %}
+
+{% if profile_user.is_instructor %}
+    <section class="section">
+        <div class="section-head">
+            <h2>{% if is_own %}Я преподаю{% else %}Курсы преподавателя{% endif %}</h2>
+            {% if is_own %}<a class="small" href="{% url 'courses:course_create' %}">Создать курс</a>{% endif %}
+        </div>
+        {% if created_courses %}
+            <p class="muted small" style="margin-bottom:0.75rem">Курсов: {{ created_courses|length }}, студентов: {{ students_count }}</p>
+            <ul class="course-list">
+                {% include 'courses/includes/course_cards.html' with courses=created_courses %}
+            </ul>
+        {% else %}
+            <div class="empty">
+                <strong>Курсов пока нет</strong>
+                {% if is_own %}<a href="{% url 'courses:course_create' %}">Создать первый курс</a>{% else %}Преподаватель ещё не опубликовал курсы.{% endif %}
+            </div>
+        {% endif %}
+    </section>
+{% endif %}
+
+{% if is_own or enrolled_courses %}
+    <section class="section">
+        <div class="section-head">
+            <h2>{% if is_own %}Я учусь{% else %}Записан на курсы{% endif %}</h2>
+        </div>
+        {% if enrolled_courses %}
+            <ul class="course-list">
+                {% include 'courses/includes/course_cards.html' with courses=enrolled_courses %}
+            </ul>
+        {% else %}
+            <div class="empty">
+                <strong>Вы пока не записаны ни на один курс</strong>
+                <a href="{% url 'courses:course_list' %}">Выбрать курс в каталоге</a>
+            </div>
+        {% endif %}
+    </section>
+{% endif %}
+{% endblock %}

@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+
 from .models import CustomUser
+
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -9,7 +11,23 @@ class CustomUserCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
+        # Роль администратора нельзя выбрать при самостоятельной регистрации.
+        # Её выдаёт суперпользователь через админку Django.
+        self.fields['role'].choices = [
+            (value, label)
+            for value, label in CustomUser.Role.choices
+            if value != CustomUser.Role.ADMIN
+        ]
+        self.fields['bio'].widget.attrs['rows'] = 3
 
-    
+
+class ProfileForm(forms.ModelForm):
+    """Редактирование собственного профиля. Роль здесь изменить нельзя."""
+
+    class Meta:
+        model = CustomUser
+        fields = ('first_name', 'last_name', 'email', 'bio')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['bio'].widget.attrs['rows'] = 5

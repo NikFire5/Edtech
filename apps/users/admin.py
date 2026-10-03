@@ -11,3 +11,6 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
         ('Дополнительные поля', {'fields': ('role', 'bio')}),
     )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        ('Дополнительные поля', {'fields': ('email', 'role')}),
+    )

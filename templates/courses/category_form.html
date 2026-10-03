@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Новая категория — SkillPulse{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <h1>Новая категория</h1>
+    <p class="lead">Категория появится в списке при создании курсов и в фильтре каталога.</p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next_url }}">
+
+        {% include 'includes/field.html' with field=form.title %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg">Создать категорию</button>
+            <a class="btn btn-ghost" href="{{ next_url }}">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

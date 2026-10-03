@@ -21,6 +21,6 @@ from apps.courses.views import IndexView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),
-    path('courses/', include('apps.courses.urls', namespace='courses')),  # Именно 'courses/', не '/courses/' и не 'courses//'
+    path('courses/', include('apps.courses.urls', namespace='courses')),
     path('users/', include('apps.users.urls', namespace='users')),
 ]

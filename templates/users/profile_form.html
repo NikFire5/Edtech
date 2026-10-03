@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Редактирование профиля — SkillPulse{% endblock %}
+
+{% block content %}
+<div class="narrow-wide">
+    <a class="back-link" href="{% url 'users:profile' %}">Профиль</a>
+    <h1>Редактирование профиля</h1>
+    <p class="lead">Имя и «О себе» видят все посетители вашей страницы.</p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="form-alert" role="alert">
+                {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="field-row">
+            {% include 'includes/field.html' with field=form.first_name %}
+            {% include 'includes/field.html' with field=form.last_name %}
+        </div>
+        {% include 'includes/field.html' with field=form.email %}
+        {% include 'includes/field.html' with field=form.bio %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg">Сохранить</button>
+            <a class="btn btn-ghost" href="{% url 'users:profile' %}">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход — SkillPulse{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <h1>Вход</h1>
+    <p class="lead">Войдите, чтобы открыть свои курсы и уроки.</p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+
+        {% if form.non_field_errors %}
+            <div class="form-alert" role="alert">
+                {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+            </div>
+        {% endif %}
+
+        {% include 'includes/field.html' with field=form.username %}
+        {% include 'includes/field.html' with field=form.password %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Войти</button>
+        </div>
+    </form>
+
+    <p class="form-foot">Нет аккаунта? <a href="{% url 'users:signup' %}">Зарегистрироваться</a></p>
+</div>
+{% endblock %}
